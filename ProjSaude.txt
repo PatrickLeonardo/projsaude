@@ -1,0 +1,181 @@
+# 📄 Product Requirements Document (PRD)
+## Projeto: Saúde Saudável
+**Versão:** 1.0  
+**Status:** Em Desenvolvimento  
+**Data:** 24 de Maio de 2024  
+**Autor:** Equipe de Produto
+
+---
+
+## 1. Visão Geral do Produto
+A plataforma **Saúde Saudável** é um sistema web responsivo focado na gestão de saúde do paciente, facilitando o agendamento de consultas, o controle de medicamentos e a comunicação direta com profissionais. O objetivo é centralizar a jornada do paciente em uma interface moderna, limpa e intuitiva.
+
+### 1.1 Objetivos Principais
+- Digitalizar a relação paciente-clínica/médico.
+- Aumentar a adesão ao tratamento via sistema de lembretes inteligentes.
+- Oferecer acesso rápido a serviços (Bate-papo, Perfil, Consultas).
+- Prover um painel administrativo intuitivo para gestão do sistema.
+
+---
+
+## 2. Público-Alvo e Personas
+
+| Persona | Descrição | Necessidades Principais |
+| :--- | :--- | :--- |
+| **Paciente** | Usuário final que busca facilidade e organização. | Agendar consultas, receber lembretes de remédios, tirar dúvidas rápidas. |
+| **Médico** | Profissional de saúde. | Visualizar agenda, confirmar presença, responder dúvidas. |
+| **Admin** | Gestor da plataforma. | Gerenciar usuários, médicos, visualizar relatórios globais. |
+
+---
+
+## 3. Escopo e Funcionalidades (MVP)
+
+### 3.1 Autenticação e Acesso
+- [ ] Login com Email/Senha.
+- [ ] Login com Google OAuth (Mockup).
+- [ ] Cadastro de nova conta (com validação de dados).
+- [ ] **RBAC (Role-Based Access Control):**
+    - `Usuário` (Paciente)
+    - `Médico`
+    - `Admin` (Acesso ao Painel de Controle)
+
+### 3.2 Home (Dashboard do Usuário)
+- [ ] Visão geral com 4 cards principais: Perfil, Consultas, Lembretes, Bate-papo.
+- [ ] Navegação fluida e responsiva.
+- [ ] Saudação personalizada ("Sua comodidade, nossa prioridade").
+
+### 3.3 Meu Perfil
+- [ ] Edição de dados pessoais (Nome, CPF, Telefone, Endereço).
+- [ ] **Máscaras de Input:** CPF (000.000.000-00), Telefone, CEP.
+- [ ] Upload de foto de perfil (Preview).
+- [ ] Histórico básico (Alérgicos/Condições).
+
+### 3.4 Consultas e Calendário
+- [ ] Visualização de calendário mensal.
+- [ ] Indicadores visuais de dias com eventos.
+- [ ] Lista de "Próximas Consultas" com status:
+    - 🟢 Confirmada
+    - 🔵 Agendada
+    - 🟠 Pendente
+- [ ] Modal para "Agendar Nova Consulta" (Selecão de Médico, Data, Hora, Tipo).
+
+### 3.5 Lembretes e Medicamentos
+- [ ] Lista de Lembretes Ativos.
+- [ ] Configuração de alerta (dias antes do término: 3, 5, 7, 10, 12, 14).
+- [ ] Alerta visual de **Urgência** (Borda vermelha).
+- [ ] Modal para "Solicitar Nova Receita".
+
+### 3.6 Bate-Papo (Chat)
+- [ ] Interface de chat em tempo real.
+- [ ] Mensagens de texto (bolhas de chat).
+- [ ] Simulação de envio de áudio e anexos.
+- [ ] Placeholder para integração futura com API de IA (ChatGPT).
+
+### 3.7 Painel de Controle (Admin/Médico)
+- [ ] **Intuitivo e Visual:** Focado em quem não programa.
+- [ ] Cards de Estatísticas (Total Usuários, Médicos, Consultas Hoje).
+- [ ] Gestão de Usuários (CRUD via Tabela).
+- [ ] Gestão de Médicos (CRUD via Tabela).
+- [ ] Relatórios visuais (Mockups de gráficos).
+- [ ] Configurações de sistema (Notificações On/Off).
+
+---
+
+## 4. Diretrizes de Design e UI/UX
+
+### 4.1 Identidade Visual
+O design deve seguir estritamente a paleta de cores fornecida e o estilo "Clean/Moderno".
+
+| Elemento | Cor (Hex) | Uso |
+| :--- | :--- | :--- |
+| **Fundo Principal** | `#7EE3C6` | Background do App. |
+| **Destaque/Highlight** | `#FF6ECF` | Elementos de chamada, cadastros. |
+| **Botões/Header** | `#2E6BE5` | Ações principais, cabeçalhos (Texto Branco). |
+| **Bordas/Sucesso** | `#3FAF5F` | Status positivo, seleção, avisos. |
+| **Texto** | `#000000` | Textos corridos e títulos principais. |
+
+### 4.2 Comportamento de UI
+- **Animações:**
+    - ❌ **REMOTO:** Animar "balanço" nos ícones.
+    - ✅ **ATIVO:** Transições suaves de hover (`scale`, `shadow`) nos cards e botões.
+- **Cantos:** Todos os elementos principais (Cards, Inputs, Botões) devem ter `border-radius` pronunciado (20px a 50px).
+- **Sombras:** Efeitos 3D sutis (`box-shadow`) para elevação dos cards sobre o fundo verde.
+- **Responsividade:**
+    - Mobile First.
+    - Menu "Hambúrguer" em telas menores.
+    - Grid fluido (1 coluna no celular, 2-4 colunas no desktop).
+
+---
+
+## 5. Requisitos Técnicos
+
+### 5.1 Frontend
+- **Framework:** React.js com TypeScript.
+- **Estilização:** CSS Modules ou Styled Components (respeitando o Design System).
+- **Estado:** Context API ou Zustand (para gestão do usuário logado e dados globais).
+- **Rotas:** React Router DOM.
+
+### 5.2 Backend
+- **Linguagem:** Node.js (Express) ou Python (FastAPI).
+- **Arquitetura:** RESTful API com Clean Architecture.
+- **Banco de Dados:**
+    - Fase 1: **Banco de Dados em Memória** (Arrays de objetos) para prototipagem rápida.
+    - Fase 2: Migração para PostgreSQL ou MongoDB.
+- **Segurança:**
+    - Validação robusta de inputs no backend.
+    - Tratamento padronizado de erros (HTTP Status Codes corretos).
+
+### 5.3 Integração
+- O Frontend deve consumir a API via `fetch` ou `axios`.
+- Comunicação bidirecional para o Chat (WebSockets ou Polling para o MVP).
+
+---
+
+## 6. Fluxo de Navegação (User Flow)
+
+1.  **Entrada** -> Login/Cadastro -> Home.
+2.  **Home** -> Clicar em "Consultas" -> Ver Calendário/Lista -> "Agendar Nova" -> Modal -> Salvar.
+3.  **Home** -> Clicar em "Lembretes" -> Ver Medicação -> Configurar Dias -> Salvar.
+4.  **Home** -> Clicar em "Bate-papo" -> Digitar Mensagem -> Enviar -> Receber Resposta.
+5.  **Login (Admin)** -> Acesso ao Painel de Controle -> Gerenciar Usuários.
+
+---
+
+## 7. Critérios de Aceite (Definition of Done)
+
+- [ ] O sistema é responsivo em Mobile, Tablet e Desktop.
+- [ ] As cores exatas (#7EE3C6, #FF6ECF, etc.) estão aplicadas.
+- [ ] Não há animações de balanço (swing) nos ícones.
+- [ ] O Painel de Controle é acessível e compreensível para leigos.
+- [ ] O Frontend comunica-se corretamente com o Backend (simulado ou real).
+- [ ] Validações de CPF e Telefone funcionam (Máscaras).
+- [ ] O Chat permite envio e visualização de mensagens.
+
+---
+
+## 8. Roadmap de Entregas
+
+### 🚩 Fase 1: MVP (Protótipo Funcional)
+- Estrutura Frontend React completa.
+- Design System implementado.
+- Banco de Dados em Memória (Mock Data).
+- Navegação entre páginas.
+- Formulários com validação visual.
+
+### 🚩 Fase 2: Backend & Integração
+- Implementação da API REST real.
+- Autenticação JWT.
+- Persistência de dados (Banco Real).
+- Segurança aprimorada.
+
+### 🚩 Fase 3: Inteligência e Melhorias
+- Integração com API do ChatGPT para respostas no Chat.
+- Notificações Push reais.
+- Relatórios gerenciais avançados.
+
+---
+
+## 9. Glossário
+- **CRUD:** Create, Read, Update, Delete (Operações básicas de banco de dados).
+- **Máscara:** Formatação visual de dados (ex: CPF) enquanto o usuário digita.
+- **RBAC:** Controle de Acesso baseado em Papéis.
