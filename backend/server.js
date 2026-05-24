@@ -248,6 +248,10 @@ app.post("/api/auth/login", async (req, res) => {
   }
 });
 
+app.get("/", async (_, res) => {
+    return res.status(200).json("API Rodando");
+})
+
 app.post("/api/auth/social/google", async (req, res) => {
   try {
     const credential = String(req.body?.credential ?? "").trim();
