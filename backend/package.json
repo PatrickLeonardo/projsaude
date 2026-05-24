@@ -4,7 +4,7 @@
   "private": true,
   "description": "Projeto React da plataforma Saude Saudavel",
   "scripts": {
-    "dev": "node server.js"
+    "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
@@ -19,6 +19,7 @@
     "google-auth-library": "^10.6.2",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.15.3",
+    "nodemon": "^3.1.14",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-router-dom": "^7.14.1"
