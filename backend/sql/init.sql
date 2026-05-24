@@ -9,7 +9,22 @@ CREATE TABLE IF NOT EXISTS users (
   name VARCHAR(120) NOT NULL,
   email VARCHAR(150) NOT NULL UNIQUE,
   password_hash VARCHAR(255) NOT NULL,
+  is_admin TINYINT(1) NOT NULL DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS social_accounts (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  provider ENUM('google', 'apple') NOT NULL,
+  provider_user_id VARCHAR(191) NOT NULL,
+  provider_email VARCHAR(191) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uniq_social_provider_user (provider, provider_user_id),
+  INDEX idx_social_accounts_user_id (user_id),
+  CONSTRAINT fk_social_accounts_user
+    FOREIGN KEY (user_id) REFERENCES users(id)
+    ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS chat_messages (

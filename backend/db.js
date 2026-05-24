@@ -97,6 +97,22 @@ export async function initDatabase() {
   }
 
   await adminConnection.query(`
+    CREATE TABLE IF NOT EXISTS social_accounts (
+      id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+      user_id INT UNSIGNED NOT NULL,
+      provider ENUM('google', 'apple') NOT NULL,
+      provider_user_id VARCHAR(191) NOT NULL,
+      provider_email VARCHAR(191) NULL,
+      created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      UNIQUE KEY uniq_social_provider_user (provider, provider_user_id),
+      INDEX idx_social_accounts_user_id (user_id),
+      CONSTRAINT fk_social_accounts_user
+        FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE CASCADE
+    )
+  `);
+
+  await adminConnection.query(`
     CREATE TABLE IF NOT EXISTS chat_messages (
       id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
       user_id INT UNSIGNED NOT NULL,

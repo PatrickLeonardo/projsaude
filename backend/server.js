@@ -2,15 +2,20 @@ import bcrypt from "bcryptjs";
 import cors from "cors";
 import express from "express";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
+import appleSigninAuth from "apple-signin-auth";
 import { initDatabase, query, testConnection } from "./db.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3333);
 const jwtSecret = process.env.JWT_SECRET ?? "projsaude_jwt_dev_secret";
+const googleClientId = String(process.env.GOOGLE_CLIENT_ID ?? "").trim();
+const appleClientId = String(process.env.APPLE_CLIENT_ID ?? "").trim();
 const adminEmails = String(process.env.ADMIN_EMAILS ?? "")
   .split(",")
   .map((email) => email.trim().toLowerCase())
   .filter(Boolean);
+const googleOAuthClient = googleClientId ? new OAuth2Client(googleClientId) : null;
 
 const allowedOrigins = [
   /^http:\/\/localhost:\d+$/,
@@ -89,6 +94,71 @@ function adminMiddleware(req, res, next) {
   return next();
 }
 
+function issueAuthToken(user) {
+  const isAdmin = isAdminUser(user);
+  const token = jwt.sign(
+    {
+      id: user.id,
+      email: user.email,
+      role: isAdmin ? "admin" : "patient",
+      is_admin: Number(user.is_admin ?? 0),
+    },
+    jwtSecret,
+    { expiresIn: "12h" },
+  );
+  return { token, isAdmin };
+}
+
+async function createUserFromSocial({ name, email }) {
+  const normalizedName = String(name ?? "").trim() || "Usuário";
+  const normalizedEmail = String(email ?? "").trim().toLowerCase();
+  const socialPasswordHash = await bcrypt.hash(
+    `social:${normalizedEmail}:${Date.now()}:${Math.random().toString(36).slice(2)}`,
+    10,
+  );
+
+  await query("INSERT INTO users (name, email, password_hash, is_admin) VALUES (?, ?, ?, 0)", [
+    normalizedName,
+    normalizedEmail,
+    socialPasswordHash,
+  ]);
+
+  const users = await query("SELECT id, name, email, is_admin FROM users WHERE email = ? LIMIT 1", [normalizedEmail]);
+  return Array.isArray(users) && users.length ? users[0] : null;
+}
+
+async function findUserByEmail(email) {
+  const users = await query("SELECT id, name, email, is_admin FROM users WHERE email = ? LIMIT 1", [
+    String(email ?? "").trim().toLowerCase(),
+  ]);
+  return Array.isArray(users) && users.length ? users[0] : null;
+}
+
+async function findUserBySocialAccount(provider, providerUserId) {
+  const rows = await query(
+    `
+      SELECT u.id, u.name, u.email, u.is_admin
+      FROM social_accounts s
+      INNER JOIN users u ON u.id = s.user_id
+      WHERE s.provider = ? AND s.provider_user_id = ?
+      LIMIT 1
+    `,
+    [provider, providerUserId],
+  );
+  return Array.isArray(rows) && rows.length ? rows[0] : null;
+}
+
+async function upsertSocialAccount({ userId, provider, providerUserId, providerEmail }) {
+  await query(
+    `
+      INSERT INTO social_accounts (user_id, provider, provider_user_id, provider_email)
+      VALUES (?, ?, ?, ?)
+      ON DUPLICATE KEY UPDATE user_id = VALUES(user_id), provider_email = VALUES(provider_email)
+    `,
+    [userId, provider, providerUserId, providerEmail || null],
+  );
+}
+
 app.get("/api/health", async (_req, res) => {
   try {
     await testConnection();
@@ -163,14 +233,7 @@ app.post("/api/auth/login", async (req, res) => {
       return res.status(401).json({ ok: false, message: "Credenciais inválidas." });
     }
 
-    const isAdmin = isAdminUser(user);
-    const token = jwt.sign(
-      { id: user.id, email: user.email, role: isAdmin ? "admin" : "patient", is_admin: Number(user.is_admin ?? 0) },
-      jwtSecret,
-      {
-        expiresIn: "12h",
-      },
-    );
+    const { token, isAdmin } = issueAuthToken(user);
 
     return res.json({
       ok: true,
@@ -182,6 +245,114 @@ app.post("/api/auth/login", async (req, res) => {
     });
   } catch (error) {
     return res.status(500).json({ ok: false, message: "Erro ao realizar login.", error: String(error) });
+  }
+});
+
+app.post("/api/auth/social/google", async (req, res) => {
+  try {
+    const credential = String(req.body?.credential ?? "").trim();
+    if (!credential) {
+      return res.status(400).json({ ok: false, message: "Token do Google não informado." });
+    }
+
+    if (!googleOAuthClient || !googleClientId) {
+      return res.status(500).json({ ok: false, message: "Login Google não configurado no servidor." });
+    }
+
+    const ticket = await googleOAuthClient.verifyIdToken({
+      idToken: credential,
+      audience: googleClientId,
+    });
+    const payload = ticket.getPayload();
+    const email = String(payload?.email ?? "").trim().toLowerCase();
+    const providerUserId = String(payload?.sub ?? "").trim();
+    const name = String(payload?.name ?? "").trim() || "Usuário Google";
+
+    if (!providerUserId || !email || payload?.email_verified !== true) {
+      return res.status(400).json({ ok: false, message: "Conta Google inválida para autenticação." });
+    }
+
+    let user = await findUserBySocialAccount("google", providerUserId);
+    if (!user) {
+      user = await findUserByEmail(email);
+    }
+    if (!user) {
+      user = await createUserFromSocial({ name, email });
+    }
+    if (!user) {
+      return res.status(500).json({ ok: false, message: "Não foi possível criar usuário via Google." });
+    }
+
+    await upsertSocialAccount({
+      userId: user.id,
+      provider: "google",
+      providerUserId,
+      providerEmail: email,
+    });
+
+    const { token, isAdmin } = issueAuthToken(user);
+    return res.json({
+      ok: true,
+      message: "Login com Google efetuado com sucesso.",
+      data: { token, user: { id: user.id, name: user.name, email: user.email, isAdmin } },
+    });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: "Erro ao autenticar com Google.", error: String(error) });
+  }
+});
+
+app.post("/api/auth/social/apple", async (req, res) => {
+  try {
+    const identityToken = String(req.body?.identityToken ?? "").trim();
+    const fullName = String(req.body?.fullName ?? "").trim();
+    if (!identityToken) {
+      return res.status(400).json({ ok: false, message: "Token da Apple não informado." });
+    }
+    if (!appleClientId) {
+      return res.status(500).json({ ok: false, message: "Login Apple não configurado no servidor." });
+    }
+
+    const claims = await appleSigninAuth.verifyIdToken(identityToken, {
+      audience: appleClientId,
+      issuer: "https://appleid.apple.com",
+      ignoreExpiration: false,
+    });
+
+    const providerUserId = String(claims?.sub ?? "").trim();
+    const email = String(claims?.email ?? "").trim().toLowerCase();
+    if (!providerUserId) {
+      return res.status(400).json({ ok: false, message: "Conta Apple inválida para autenticação." });
+    }
+
+    let user = await findUserBySocialAccount("apple", providerUserId);
+    if (!user && email) {
+      user = await findUserByEmail(email);
+    }
+    if (!user && email) {
+      user = await createUserFromSocial({ name: fullName || "Usuário Apple", email });
+    }
+    if (!user) {
+      return res.status(400).json({
+        ok: false,
+        message: "Não foi possível identificar e-mail da conta Apple. Tente novamente e permita compartilhar e-mail.",
+      });
+    }
+
+    await upsertSocialAccount({
+      userId: user.id,
+      provider: "apple",
+      providerUserId,
+      providerEmail: email || user.email,
+    });
+
+    const { token, isAdmin } = issueAuthToken(user);
+    return res.json({
+      ok: true,
+      message: "Login com Apple efetuado com sucesso.",
+      data: { token, user: { id: user.id, name: user.name, email: user.email, isAdmin } },
+    });
+  } catch (error) {
+    return res.status(500).json({ ok: false, message: "Erro ao autenticar com Apple.", error: String(error) });
   }
 });
 

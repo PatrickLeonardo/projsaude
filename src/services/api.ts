@@ -71,6 +71,26 @@ export async function loginUser(payload: { email: string; password: string }) {
   });
 }
 
+export async function loginWithGoogle(credential: string) {
+  return request<{ token: string; user: { id: number; name: string; email: string; isAdmin: boolean } }>(
+    "/auth/social/google",
+    {
+      method: "POST",
+      body: JSON.stringify({ credential }),
+    },
+  );
+}
+
+export async function loginWithApple(payload: { identityToken: string; fullName?: string }) {
+  return request<{ token: string; user: { id: number; name: string; email: string; isAdmin: boolean } }>(
+    "/auth/social/apple",
+    {
+      method: "POST",
+      body: JSON.stringify(payload),
+    },
+  );
+}
+
 export async function loginAdmin(payload: { email: string; password: string }) {
   return request<{ token: string; user: { id: number; name: string; email: string; isAdmin: true } }>(
     "/auth/admin/login",

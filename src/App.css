@@ -2,7 +2,7 @@
   min-height: 100vh;
   display: grid;
   place-items: center;
-  background-color: #7ee3c6;
+  background-color: #ffffff;
   padding: 24px;
 }
 
@@ -13,7 +13,7 @@
 
 .brand-title {
   margin: 0;
-  color: #ffffff;
+  color: #1f4ea8;
   font-size: clamp(2.5rem, 8vw, 3.5rem);
   line-height: 0.95;
   font-weight: 800;
@@ -22,7 +22,7 @@
 
 .brand-subtitle {
   margin: 18px 0 36px;
-  color: #ffffff;
+  color: #3b69bf;
   font-size: clamp(1rem, 2.5vw, 1.9rem);
   font-weight: 600;
 }
@@ -61,8 +61,8 @@
   width: 100%;
   height: 56px;
   border-radius: 999px;
-  background-color: #ffffff;
-  color: #2e6be5;
+  background-color: #eaf2ff;
+  color: #1f4ea8;
   text-decoration: none;
   font-weight: 700;
   box-shadow: 0 10px 20px rgb(0 0 0 / 10%);
@@ -82,14 +82,14 @@
 .admin-access-link {
   display: inline-block;
   margin: -20px 0 28px;
-  color: #eaf4ff;
+  color: #2e6be5;
   font-weight: 700;
   text-decoration: underline;
 }
 
 .support-message {
   margin: 0;
-  color: #ffffff;
+  color: #2d5eb8;
   font-size: 1.25rem;
   line-height: 1.35;
 }
@@ -99,13 +99,13 @@
   display: grid;
   place-items: center;
   padding: 24px;
-  background-color: #7ee3c6;
+  background-color: #ffffff;
 }
 
 .auth-card {
   width: min(460px, 100%);
   border-radius: 28px;
-  background-color: #ffffff;
+  background-color: #f5f9ff;
   box-shadow: 0 20px 40px rgb(0 0 0 / 15%);
   padding: 28px;
 }
@@ -118,7 +118,7 @@
 
 .auth-subtitle {
   margin: 10px 0 22px;
-  color: #2b2b2b;
+  color: #325b9a;
 }
 
 .auth-form {
@@ -127,7 +127,7 @@
 }
 
 .auth-label {
-  color: #2b2b2b;
+  color: #1d4f9a;
   font-weight: 600;
   font-size: 0.92rem;
 }
@@ -163,9 +163,54 @@
   box-shadow: 0 10px 24px rgb(46 107 229 / 35%);
 }
 
+.auth-social-divider {
+  margin: 14px 0 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #4c6ba5;
+  font-size: 0.9rem;
+}
+
+.auth-social-divider::before,
+.auth-social-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: #c9d8f2;
+}
+
+.auth-social-group {
+  display: grid;
+  gap: 10px;
+}
+
+.auth-google-slot {
+  min-height: 42px;
+}
+
+.auth-social-button {
+  height: 44px;
+  border: none;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.auth-social-button.apple {
+  background-color: #1849b3;
+  color: #ffffff;
+}
+
+.auth-social-button.google {
+  background-color: #ffffff;
+  color: #1f4ea8;
+  border: 1px solid #b7cbee;
+}
+
 .auth-footer {
   margin: 18px 0 10px;
-  color: #2b2b2b;
+  color: #1f4f96;
 }
 
 .auth-feedback {
@@ -204,14 +249,14 @@
   flex-direction: column;
   align-items: center;
   padding: 0 24px 30px;
-  background-color: #55d8ad;
+  background-color: #ffffff;
 }
 
 .dashboard-header {
   width: calc(100% + 48px);
   max-width: none;
   margin: 0 0 18px;
-  background-color: #8af2d4;
+  background-color: #e7f0ff;
   border-radius: 0;
   padding: 16px 18px;
   display: flex;
@@ -221,14 +266,14 @@
 
 .dashboard-brand {
   margin: 0;
-  color: #ffffff;
+  color: #123b86;
   font-size: clamp(1.25rem, 3vw, 2rem);
   font-weight: 800;
 }
 
 .dashboard-brand-subtitle {
   margin: 2px 0 0;
-  color: #ffffff;
+  color: #19499e;
   font-size: clamp(0.95rem, 2.2vw, 1.45rem);
   font-weight: 600;
 }
@@ -237,7 +282,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 2px solid #ffffff;
+  border: 2px solid #2e6be5;
   background: transparent;
   cursor: pointer;
   display: grid;
@@ -247,7 +292,7 @@
 .dashboard-user-icon svg {
   width: 20px;
   height: 20px;
-  stroke: #ffffff;
+  stroke: #2e6be5;
   fill: none;
   stroke-width: 2;
   stroke-linecap: round;
@@ -261,21 +306,21 @@
 
 .dashboard-title {
   margin: 8px 0 10px;
-  color: #ffffff;
+  color: #1f4ea8;
   font-size: clamp(2.1rem, 6vw, 4rem);
   font-weight: 800;
 }
 
 .dashboard-subtitle {
   margin: 0 0 14px;
-  color: #ffffff;
+  color: #3a69bf;
   font-size: clamp(1rem, 2.4vw, 2rem);
   font-weight: 600;
 }
 
 .dashboard-meta {
   margin: 0 0 22px;
-  color: #ffffff;
+  color: #4b74ba;
   font-size: 1rem;
 }
 
@@ -291,7 +336,7 @@
   min-height: 160px;
   border-radius: 24px;
   background-color: #2e6be5;
-  color: #ffffff;
+  color: #1f4ea8;
   padding: 20px;
   box-shadow: 0 14px 30px rgb(46 107 229 / 35%);
   display: grid;
@@ -309,19 +354,22 @@
 
 .dashboard-item-icon {
   font-size: 1.3rem;
+  color: #ffffff;
   opacity: 0.95;
 }
 
 .dashboard-item-title {
   margin: 0;
+  color: #ffffff;
   font-size: clamp(1.3rem, 2.2vw, 2rem);
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: 0.02em;
+  text-shadow: 0 2px 8px rgb(9 36 84 / 35%);
 }
 
 .dashboard-callout {
   margin: 0;
-  color: #ffffff;
+  color: #3d6dc3;
   font-size: clamp(1.6rem, 3.3vw, 3rem);
   font-weight: 800;
 }
@@ -337,8 +385,8 @@
   border: none;
   border-radius: 999px;
   padding: 12px 26px;
-  background-color: #ffffff;
-  color: #2e6be5;
+  background-color: #dbe9ff;
+  color: #1849b3;
   font-weight: 700;
   cursor: pointer;
   transition: transform 0.2s ease;
@@ -362,14 +410,14 @@
 
 .admin-page {
   min-height: 100vh;
-  background-color: #55d8ad;
+  background-color: #ffffff;
   padding: 24px;
 }
 
 .admin-card {
   max-width: 1200px;
   margin: 0 auto;
-  background-color: #ffffff;
+  background-color: #f5f9ff;
   border-radius: 22px;
   padding: 22px;
   box-shadow: 0 18px 36px rgb(0 0 0 / 14%);
@@ -490,8 +538,8 @@
 .admin-row button {
   border: none;
   border-radius: 999px;
-  background-color: #ffedf1;
-  color: #c52552;
+  background-color: #dce9ff;
+  color: #1f4ea8;
   padding: 8px 12px;
   font-weight: 700;
   cursor: pointer;
@@ -503,13 +551,13 @@
 }
 
 .admin-inline-actions button:first-child {
-  background-color: #fff7e9;
-  color: #a85f00;
+  background-color: #eaf2ff;
+  color: #2a5dc2;
 }
 
 .admin-inline-actions button:last-child {
-  background-color: #e8f7ec;
-  color: #1f7e3b;
+  background-color: #dbe9ff;
+  color: #1849b3;
 }
 
 .admin-empty {
@@ -572,10 +620,10 @@
 
 .consultas-banner {
   margin-top: 14px;
-  border: 2px solid #ff6ecf;
+  border: 2px solid #9fc0ff;
   border-radius: 22px;
-  background: rgb(255 255 255 / 18%);
-  color: #0f3d2f;
+  background: rgb(234 242 255 / 92%);
+  color: #0f2f6d;
   font-weight: 700;
   text-align: center;
   padding: 16px;
@@ -640,8 +688,8 @@
 }
 
 .calendar-day.has-appointment {
-  border: 2px solid #3faf5f;
-  background-color: #dff8e8;
+  border: 2px solid #2e6be5;
+  background-color: #eaf2ff;
 }
 
 .consultas-list {
@@ -707,13 +755,13 @@
 }
 
 .tag.status.confirmada {
-  background-color: #3faf5f;
+  background-color: #1f5fe0;
   color: #ffffff;
 }
 
 .tag.status.pendente {
-  background-color: #f4a93a;
-  color: #111111;
+  background-color: #8fb3f5;
+  color: #0f2f6d;
 }
 
 .consultas-add-button,
@@ -854,8 +902,8 @@
 }
 
 .lembrete-item.urgent {
-  border-color: #ff4b4b;
-  box-shadow: 0 0 0 2px rgb(255 75 75 / 20%);
+  border-color: #5d8ee8;
+  box-shadow: 0 0 0 2px rgb(93 142 232 / 24%);
 }
 
 .lembrete-top {
@@ -909,7 +957,7 @@
 
 .chat-online {
   border-radius: 999px;
-  background-color: #3faf5f;
+  background-color: #2e6be5;
   color: #ffffff;
   padding: 4px 10px;
   font-size: 0.75rem;
@@ -955,7 +1003,7 @@
 
 .chat-bubble.system {
   justify-self: center;
-  background-color: #fff4fa;
+  background-color: #edf4ff;
 }
 
 .chat-typing {
@@ -968,8 +1016,8 @@
   margin-top: 12px;
   padding: 12px;
   border-radius: 14px;
-  background-color: #fff4fa;
-  color: #6b5b65;
+  background-color: #eaf2ff;
+  color: #2a4d83;
   font-size: 0.9rem;
 }
 
@@ -1010,7 +1058,7 @@
 }
 
 .chat-voice-btn {
-  background-color: #e8f7ec;
+  background-color: #eef4ff;
 }
 
 .chat-send-btn {
@@ -1091,8 +1139,8 @@
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  border: 3px solid #3faf5f;
-  color: #3faf5f;
+  border: 3px solid #2e6be5;
+  color: #2e6be5;
   font-weight: 700;
   display: grid;
   place-items: center;
